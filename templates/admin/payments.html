@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+{% block title %}To'lovlar{% endblock %}
+{% block content %}
+
+<div class="page-header">
+  <div>
+    <p class="eyebrow">Administrator</p>
+    <h1>Pullik testlar uchun to'lov so'rovlari</h1>
+  </div>
+</div>
+
+<div class="btn-row" style="margin-bottom:18px; flex-wrap:wrap;">
+  <a class="btn btn-sm {% if status_filter == 'pending' %}btn-gold{% else %}btn-ghost{% endif %}"
+     href="{{ url_for('admin.payments_list', status='pending', test_id=test_filter) }}">⏳ Kutilmoqda</a>
+  <a class="btn btn-sm {% if status_filter == 'approved' %}btn-gold{% else %}btn-ghost{% endif %}"
+     href="{{ url_for('admin.payments_list', status='approved', test_id=test_filter) }}">✅ Tasdiqlangan</a>
+  <a class="btn btn-sm {% if status_filter == 'rejected' %}btn-gold{% else %}btn-ghost{% endif %}"
+     href="{{ url_for('admin.payments_list', status='rejected', test_id=test_filter) }}">❌ Rad etilgan</a>
+
+  {% if paid_tests %}
+    <form method="get" action="{{ url_for('admin.payments_list') }}" style="margin-left:auto;">
+      <input type="hidden" name="status" value="{{ status_filter }}">
+      <select class="form-input" name="test_id" onchange="this.form.submit()" style="min-width:200px;">
+        <option value="">Barcha pullik testlar</option>
+        {% for t in paid_tests %}
+          <option value="{{ t.id }}" {% if test_filter == t.id|string %}selected{% endif %}>{{ t.title }}</option>
+        {% endfor %}
+      </select>
+    </form>
+  {% endif %}
+</div>
+
+{% if requests_rows %}
+<div class="card">
+  <div class="table-wrap">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Foydalanuvchi</th>
+          <th>Test</th>
+          <th>Test sanasi</th>
+          <th>Narxi</th>
+          <th>Yuborilgan</th>
+          <th>Chek</th>
+          <th>Holati</th>
+          <th>Amallar</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for p in requests_rows %}
+          <tr>
+            <td><strong>{{ p.full_name }}</strong><br><span class="text-muted mono" style="font-size:0.78rem;">@{{ p.username }}</span></td>
+            <td>{{ p.test_title }}</td>
+            <td class="mono">{{ p.test_starts_at.strftime('%d.%m.%Y %H:%M') if p.test_starts_at else '—' }}</td>
+            <td class="mono">{{ "{:,}".format(p.test_price).replace(",", " ") }} so'm</td>
+            <td class="mono">{{ p.created_at.strftime('%d.%m.%Y %H:%M') }}</td>
+            <td><a class="btn btn-ghost btn-sm" href="{{ url_for('admin.payment_receipt', payment_id=p.id) }}" target="_blank">📎 Ko'rish</a></td>
+            <td>
+              {% if p.status == 'pending' %}
+                <span class="badge badge-inactive">⏳ Kutilmoqda</span>
+              {% elif p.status == 'approved' %}
+                <span class="badge badge-active">✅ Tasdiqlangan</span>
+              {% else %}
+                <span class="badge badge-blocked">❌ Rad etilgan</span>
+                {% if p.admin_comment %}<div class="text-muted" style="font-size:0.76rem; margin-top:4px;">{{ p.admin_comment }}</div>{% endif %}
+              {% endif %}
+            </td>
+            <td>
+              {% if p.status == 'pending' %}
+                <div class="btn-row">
+                  <form method="post" action="{{ url_for('admin.payment_approve', payment_id=p.id) }}">
+                    <input type="hidden" name="return_status" value="{{ status_filter }}">
+                    <button class="btn btn-gold btn-sm" type="submit">Tasdiqlash</button>
+                  </form>
+                  <details>
+                    <summary class="btn btn-danger btn-sm" style="display:inline-block; cursor:pointer;">Rad etish</summary>
+                    <form method="post" action="{{ url_for('admin.payment_reject', payment_id=p.id) }}" style="margin-top:8px; min-width:220px;">
+                      <input type="hidden" name="return_status" value="{{ status_filter }}">
+                      <input class="form-input" type="text" name="admin_comment" placeholder="Rad etish sababi (ixtiyoriy)">
+                      <button class="btn btn-danger btn-sm" type="submit" style="margin-top:6px;">Yuborish</button>
+                    </form>
+                  </details>
+                </div>
+              {% else %}
+                <span class="text-muted" style="font-size:0.8rem;">
+                  {{ p.reviewed_at.strftime('%d.%m.%Y %H:%M') if p.reviewed_at else '' }}
+                </span>
+              {% endif %}
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% else %}
+  <div class="card">
+    <div class="empty-state">
+      <div class="empty-icon">💳</div>
+      <h3>Bu bo'limda hozircha so'rovlar yo'q</h3>
+      <p>Foydalanuvchilar pullik testga to'lov chekini yuklaganda shu yerda paydo bo'ladi.</p>
+    </div>
+  </div>
+{% endif %}
+
+{% endblock %}

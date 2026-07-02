@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}Ro'yxatdan o'tish{% endblock %}
+{% block content %}
+<div class="auth-shell">
+  <div class="auth-card card">
+    <div class="card-pad">
+      <h1 class="auth-title">Ro'yxatdan o'tish</h1>
+      <p class="auth-subtitle">Bilimdonlik testlarida ishtirok etish uchun hisob yarating</p>
+
+      <form method="post">
+        <div class="form-group">
+          <label class="form-label" for="full_name">To'liq ism</label>
+          <input class="form-input" type="text" id="full_name" name="full_name" required autofocus
+                 value="{{ request.form.full_name or '' }}">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="username">Login</label>
+          <input class="form-input" type="text" id="username" name="username" required
+                 value="{{ request.form.username or '' }}">
+          <p class="form-hint">4-30 belgi, faqat lotin harf, raqam va pastki chiziq</p>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="password">Parol</label>
+            <input class="form-input" type="password" id="password" name="password" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="password2">Parolni takrorlang</label>
+            <input class="form-input" type="password" id="password2" name="password2" required>
+          </div>
+        </div>
+        <button class="btn btn-primary btn-block" type="submit">Ro'yxatdan o'tish</button>
+      </form>
+
+      <p class="text-center text-muted" style="margin-top:18px; font-size:0.88rem;">
+        Hisobingiz bormi? <a href="{{ url_for('auth.login') }}">Tizimga kiring</a>
+      </p>
+    </div>
+  </div>
+</div>
+{% endblock %}

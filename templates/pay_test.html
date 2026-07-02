@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block title %}{{ test.title }} — To'lov{% endblock %}
+{% block content %}
+
+<div class="page-header">
+  <div>
+    <p class="eyebrow">Pullik test</p>
+    <h1 style="margin:0;">{{ test.title }}</h1>
+  </div>
+  <a class="btn btn-ghost" href="{{ url_for('user.dashboard') }}">← Testlar ro'yxati</a>
+</div>
+
+<div class="card card-pad" style="max-width:560px;">
+
+  {% if payment and payment.status == 'approved' %}
+    <div class="alert alert-success" style="margin-bottom:16px;">
+      ✅ To'lovingiz tasdiqlangan. Test boshlanganda "Boshlash" tugmasi orqali qatnasha olasiz.
+    </div>
+  {% elif payment and payment.status == 'pending' %}
+    <div class="alert alert-success" style="margin-bottom:16px; background: rgba(201,150,44,0.12); color: var(--gold-dark);">
+      ⏳ To'lov chekingiz yuborilgan, administrator tekshirib chiqishini kutib turing.
+      Tasdiqlangach, shu sahifa va asosiy oynadan testga kira olasiz.
+    </div>
+  {% elif payment and payment.status == 'rejected' %}
+    <div class="alert alert-error" style="margin-bottom:16px;">
+      ❌ Avvalgi to'lov chekingiz rad etildi{% if payment.admin_comment %}: {{ payment.admin_comment }}{% endif %}.
+      Iltimos, to'g'ri chekni qaytadan yuklang.
+    </div>
+  {% endif %}
+
+  <div style="background: rgba(27,42,74,0.05); border-radius: 8px; padding: 16px; margin-bottom: 20px;">
+    <p style="font-size:0.78rem; text-transform:uppercase; letter-spacing:0.05em; color: var(--muted); margin-bottom:6px;">
+      Qatnashish narxi
+    </p>
+    <p style="font-size:1.4rem; font-weight:700; color: var(--gold-dark); margin-bottom:14px;">
+      {{ "{:,}".format(test.price).replace(",", " ") }} so'm
+    </p>
+
+    {% if test.starts_at %}
+    <p style="font-size:0.78rem; text-transform:uppercase; letter-spacing:0.05em; color: var(--muted); margin-bottom:4px;">
+      Test sanasi
+    </p>
+    <p class="mono" style="margin-bottom:14px;">{{ test.starts_at.strftime('%d.%m.%Y %H:%M') }}</p>
+    {% endif %}
+
+    <p style="font-size:0.78rem; text-transform:uppercase; letter-spacing:0.05em; color: var(--muted); margin-bottom:4px;">
+      To'lov uchun karta raqami
+    </p>
+    <p class="mono" style="font-size:1.1rem; font-weight:600; color: var(--ink); margin-bottom:4px;">
+      {{ settings.get('payment_card_number', '—') }}
+    </p>
+    <p style="font-size:0.85rem; color: var(--muted);">{{ settings.get('payment_card_owner', '') }}</p>
+  </div>
+
+  {% if not payment or payment.status != 'approved' %}
+  <form method="post" enctype="multipart/form-data">
+    <div class="form-group">
+      <label class="form-label" for="receipt">To'lov chekini yuklang (rasm yoki PDF)</label>
+      <input class="form-input" type="file" id="receipt" name="receipt"
+             accept="image/png,image/jpeg,image/webp,application/pdf" required>
+      <p class="form-hint">
+        Yuqoridagi kartaga to'lovni amalga oshirgach, to'lov chekini (skrinshot yoki rasm) shu yerga yuklang.
+        Administrator tasdiqlagach, test boshlanadigan vaqtda kira olasiz.
+      </p>
+    </div>
+    <button class="btn btn-primary" type="submit">
+      {% if payment and payment.status == 'rejected' %}Chekni qaytadan yuborish{% else %}Chekni yuborish{% endif %}
+    </button>
+  </form>
+  {% endif %}
+
+</div>
+
+{% endblock %}

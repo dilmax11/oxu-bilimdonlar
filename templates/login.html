@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Kirish{% endblock %}
+{% block content %}
+<div class="auth-shell">
+  <div class="auth-card card">
+    <div class="card-pad">
+      <h1 class="auth-title">Tizimga kirish</h1>
+      <p class="auth-subtitle">Bilimdonlar platformasiga xush kelibsiz</p>
+
+      <form method="post">
+        <div class="form-group">
+          <label class="form-label" for="username">Login</label>
+          <input class="form-input" type="text" id="username" name="username" required autofocus>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="password">Parol</label>
+          <input class="form-input" type="password" id="password" name="password" required>
+        </div>
+        <button class="btn btn-primary btn-block" type="submit">Kirish</button>
+      </form>
+
+      <p class="text-center text-muted" style="margin-top:18px; font-size:0.88rem;">
+        Hisobingiz yo'qmi? <a href="{{ url_for('auth.register') }}">Ro'yxatdan o'ting</a>
+      </p>
+    </div>
+  </div>
+</div>
+{% endblock %}

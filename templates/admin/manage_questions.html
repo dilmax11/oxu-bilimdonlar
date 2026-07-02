@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}{{ test.title }} — Savollar{% endblock %}
+{% block content %}
+
+<div class="page-header">
+  <div>
+    <p class="eyebrow">Administrator · {{ test.title }}</p>
+    <h1>Savollar</h1>
+    <p class="subtitle">{{ questions|length }} ta savol · jami {{ questions|sum(attribute='points') }} ball</p>
+  </div>
+  <div class="btn-row">
+    <a class="btn btn-ghost" href="{{ url_for('admin.tests_list') }}">← Testlar</a>
+    <a class="btn btn-gold" href="{{ url_for('admin.question_new', test_id=test.id) }}">+ Savol qo'shish</a>
+  </div>
+</div>
+
+{% if questions %}
+  {% for q in questions %}
+    <div class="card question-card">
+      <div class="question-number">SAVOL {{ loop.index }} · {{ q.points }} ball</div>
+      <div class="question-text">{{ q.question_text }}</div>
+      <div class="option-list">
+        {% for letter, text in [('A', q.option_a), ('B', q.option_b), ('C', q.option_c), ('D', q.option_d)] %}
+          <div class="option-row {% if letter == q.correct_option %}correct{% endif %}">
+            <span class="option-letter">{{ letter }}</span>
+            <span>{{ text }}</span>
+            {% if letter == q.correct_option %}<span style="margin-left:auto;">✅ to'g'ri</span>{% endif %}
+          </div>
+        {% endfor %}
+      </div>
+      <div class="btn-row" style="margin-top:14px;">
+        <a class="btn btn-ghost btn-sm" href="{{ url_for('admin.question_edit', question_id=q.id) }}">Tahrirlash</a>
+        <form method="post" action="{{ url_for('admin.question_delete', question_id=q.id) }}"
+              data-confirm="Bu savolni o'chirishni tasdiqlaysizmi?">
+          <button class="btn btn-danger btn-sm" type="submit">O'chirish</button>
+        </form>
+      </div>
+    </div>
+  {% endfor %}
+{% else %}
+  <div class="card">
+    <div class="empty-state">
+      <div class="empty-icon">❓</div>
+      <h3>Hali savollar yo'q</h3>
+      <p>Testni faollashtirishdan oldin kamida bitta savol qo'shing.</p>
+    </div>
+  </div>
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,634 @@
+<!doctype html>
+<html lang="uz">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Bilimdonlar — O'zbekiston Intellektual Test Platformasi</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,700;1,9..144,600&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --ink: #1B2A4A;
+      --ink-light: #2E4470;
+      --paper: #F4EFE3;
+      --paper-card: #FFFEFB;
+      --gold: #C9962C;
+      --gold-light: #E3B655;
+      --gold-dark: #9C7521;
+      --charcoal: #2A2A28;
+      --muted: #756E5E;
+      --border: #E1D9C4;
+      --success: #3F7D58;
+      --success-bg: #E7F1EA;
+      --danger: #B23A2E;
+      --radius: 8px;
+      --shadow: 0 2px 8px rgba(27,42,74,0.08), 0 8px 32px rgba(27,42,74,0.06);
+      --font-d: "Fraunces", Georgia, serif;
+      --font-b: "Inter", system-ui, sans-serif;
+      --font-m: "IBM Plex Mono", monospace;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font-b);
+      background: var(--paper);
+      color: var(--charcoal);
+      line-height: 1.6;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    /* ── Navbar ── */
+    .nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: rgba(27,42,74,0.96);
+      backdrop-filter: blur(12px);
+      border-bottom: 2px solid var(--gold);
+    }
+    .nav-inner {
+      max-width: 1100px; margin: 0 auto; padding: 0 24px;
+      height: 64px; display: flex; align-items: center; justify-content: space-between;
+    }
+    .nav-brand {
+      font-family: var(--font-d); font-size: 1.4rem; font-weight: 700;
+      color: #fff; display: flex; align-items: center; gap: 8px;
+    }
+    .nav-brand .dot { color: var(--gold-light); }
+    .nav-actions { display: flex; gap: 10px; }
+    .nav-btn {
+      padding: 8px 20px; border-radius: 4px;
+      font-size: 0.88rem; font-weight: 600; cursor: pointer;
+      transition: all 0.15s;
+    }
+    .nav-btn-ghost {
+      color: rgba(255,255,255,0.85); border: 1px solid rgba(255,255,255,0.25);
+    }
+    .nav-btn-ghost:hover { background: rgba(255,255,255,0.1); color: #fff; }
+    .nav-btn-gold {
+      background: var(--gold); color: var(--ink); border: 1px solid transparent;
+    }
+    .nav-btn-gold:hover { background: var(--gold-light); }
+
+    /* ── Hero ── */
+    .hero {
+      min-height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      text-align: center;
+      padding: 100px 24px 80px;
+      background:
+        radial-gradient(ellipse 80% 60% at 50% 0%, rgba(27,42,74,0.92) 0%, transparent 70%),
+        url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23c9962c' fill-opacity='0.07'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E"),
+        var(--ink);
+      position: relative; overflow: hidden;
+    }
+    .hero::after {
+      content: '';
+      position: absolute; bottom: -2px; left: 0; right: 0; height: 80px;
+      background: linear-gradient(to bottom, transparent, var(--paper));
+    }
+
+    .hero-label {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(201,150,44,0.15); border: 1px solid rgba(201,150,44,0.4);
+      color: var(--gold-light); font-size: 0.78rem; font-weight: 700;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      padding: 6px 16px; border-radius: 99px; margin-bottom: 24px;
+    }
+    .hero-title {
+      font-family: var(--font-d); font-size: clamp(2.4rem, 6vw, 4.2rem);
+      font-weight: 700; line-height: 1.1; color: #fff;
+      max-width: 800px; margin: 0 auto 20px;
+    }
+    .hero-title span { color: var(--gold-light); font-style: italic; }
+    .hero-subtitle {
+      color: rgba(255,255,255,0.72); font-size: 1.1rem;
+      max-width: 600px; margin: 0 auto 40px;
+    }
+    .hero-btns { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+    .hero-btn {
+      padding: 14px 32px; border-radius: 4px; font-size: 1rem; font-weight: 600;
+      cursor: pointer; transition: all 0.15s;
+    }
+    .hero-btn-primary { background: var(--gold); color: var(--ink); }
+    .hero-btn-primary:hover { background: var(--gold-light); transform: translateY(-1px); }
+    .hero-btn-outline { border: 1.5px solid rgba(255,255,255,0.4); color: #fff; }
+    .hero-btn-outline:hover { background: rgba(255,255,255,0.08); }
+
+    /* ── Stats strip ── */
+    .stats-strip {
+      background: var(--ink);
+      border-top: 2px solid var(--gold); border-bottom: 2px solid var(--gold);
+      padding: 28px 0;
+    }
+    .stats-inner {
+      max-width: 1100px; margin: 0 auto; padding: 0 24px;
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      text-align: center; gap: 0;
+    }
+    .stat-item + .stat-item { border-left: 1px solid rgba(255,255,255,0.1); }
+    .stat-val {
+      font-family: var(--font-m); font-size: 2.2rem; font-weight: 600;
+      color: var(--gold-light); line-height: 1;
+    }
+    .stat-lbl { color: rgba(255,255,255,0.55); font-size: 0.8rem; margin-top: 6px; text-transform: uppercase; letter-spacing: 0.06em; }
+
+    /* ── Sections ── */
+    .section { padding: 80px 0; }
+    .section-alt { background: #EDE8DA; }
+    .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+
+    .section-head { text-align: center; margin-bottom: 48px; }
+    .section-eyebrow {
+      display: inline-block; color: var(--gold-dark);
+      font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em;
+      text-transform: uppercase; margin-bottom: 12px;
+    }
+    .section-title {
+      font-family: var(--font-d); font-size: clamp(1.6rem, 3vw, 2.4rem);
+      color: var(--ink); line-height: 1.15;
+    }
+    .section-desc { color: var(--muted); margin-top: 10px; font-size: 1rem; }
+
+    /* ── Cards grid ── */
+    .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+
+    /* ── Upcoming test card ── */
+    .test-card {
+      background: var(--paper-card); border: 1px solid var(--border);
+      border-radius: var(--radius); box-shadow: var(--shadow);
+      padding: 24px; display: flex; flex-direction: column; gap: 12px;
+      position: relative; overflow: hidden;
+    }
+    .test-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, var(--gold), var(--gold-light));
+    }
+    .test-card-label {
+      font-size: 0.7rem; font-weight: 700; letter-spacing: 0.08em;
+      text-transform: uppercase; color: var(--gold-dark);
+    }
+    .test-card-title { font-family: var(--font-d); font-size: 1.1rem; color: var(--ink); font-weight: 600; }
+    .test-card-desc { font-size: 0.88rem; color: var(--muted); flex: 1; }
+    .test-card-meta { display: flex; flex-wrap: wrap; gap: 10px; }
+    .meta-pill {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: rgba(27,42,74,0.06); border-radius: 99px;
+      padding: 4px 12px; font-size: 0.76rem; font-family: var(--font-m); color: var(--ink);
+    }
+    .prize-pill {
+      background: rgba(201,150,44,0.12); color: var(--gold-dark);
+      border-radius: 4px; padding: 8px 12px;
+      font-size: 0.82rem; border-left: 3px solid var(--gold);
+    }
+    .prize-pill strong { display: block; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 2px; }
+
+    /* Countdown */
+    .countdown { display: flex; gap: 8px; align-items: center; }
+    .cdown-unit { text-align: center; }
+    .cdown-num {
+      display: block; background: var(--ink); color: var(--gold-light);
+      font-family: var(--font-m); font-size: 1.2rem; font-weight: 600;
+      padding: 4px 10px; border-radius: 4px; min-width: 40px;
+    }
+    .cdown-lbl { display: block; font-size: 0.62rem; color: var(--muted); margin-top: 2px; text-transform: uppercase; letter-spacing: 0.04em; }
+    .cdown-sep { font-family: var(--font-m); font-size: 1.2rem; color: var(--muted); margin-top: -6px; }
+
+    .join-btn {
+      display: block; text-align: center;
+      background: var(--gold); color: var(--ink);
+      padding: 11px; border-radius: 4px;
+      font-weight: 700; font-size: 0.9rem;
+      transition: background 0.15s;
+    }
+    .join-btn:hover { background: var(--gold-light); }
+
+    /* ── Winners card ── */
+    .winner-card {
+      background: var(--paper-card); border: 1px solid var(--border);
+      border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden;
+    }
+    .winner-card-head {
+      background: var(--ink); padding: 16px 20px;
+      display: flex; align-items: flex-start; justify-content: space-between; gap: 12px;
+    }
+    .winner-card-title {
+      font-family: var(--font-d); font-size: 1rem; color: #fff; font-weight: 600;
+    }
+    .winner-card-date { font-family: var(--font-m); font-size: 0.72rem; color: rgba(255,255,255,0.45); margin-top: 4px; }
+    .ended-badge {
+      background: rgba(201,150,44,0.2); color: var(--gold-light);
+      font-size: 0.68rem; font-weight: 700; letter-spacing: 0.05em;
+      padding: 3px 10px; border-radius: 99px; white-space: nowrap; flex-shrink: 0;
+      text-transform: uppercase;
+    }
+    .winner-card-body { padding: 16px 20px; }
+    .winner-row { display: flex; align-items: center; gap: 12px; }
+    .winner-medal { font-size: 1.8rem; }
+    .winner-name { font-weight: 700; color: var(--ink); font-size: 1.05rem; }
+    .winner-score {
+      margin-left: auto; font-family: var(--font-m); font-weight: 600;
+      color: var(--gold-dark); font-size: 1rem;
+    }
+    .winner-card-footer {
+      padding: 10px 20px 16px; display: flex; gap: 10px; flex-wrap: wrap;
+    }
+    .stat-tag {
+      font-size: 0.76rem; color: var(--muted); font-family: var(--font-m);
+      background: rgba(27,42,74,0.05); padding: 3px 10px; border-radius: 99px;
+    }
+    .winner-prize {
+      font-size: 0.82rem; color: var(--success); font-weight: 600;
+      background: var(--success-bg); padding: 3px 10px; border-radius: 99px;
+    }
+
+    /* ── About section ── */
+    .about-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center;
+    }
+    .about-text h2 { font-family: var(--font-d); font-size: 2rem; color: var(--ink); margin-bottom: 16px; }
+    .about-text p { color: var(--muted); margin-bottom: 14px; font-size: 0.96rem; }
+    .feature-list { list-style: none; margin-top: 24px; display: flex; flex-direction: column; gap: 12px; }
+    .feature-list li {
+      display: flex; gap: 12px; align-items: flex-start;
+      font-size: 0.94rem; color: var(--charcoal);
+    }
+    .feature-list li .icon {
+      width: 32px; height: 32px; background: rgba(201,150,44,0.12);
+      border-radius: 6px; display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; font-size: 1rem;
+    }
+    .about-visual {
+      background: var(--ink); border-radius: var(--radius);
+      padding: 32px; display: flex; flex-direction: column; gap: 12px;
+    }
+    .podium { display: flex; align-items: flex-end; justify-content: center; gap: 8px; margin-bottom: 8px; }
+    .podium-bar { border-radius: 4px 4px 0 0; width: 64px; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 6px; font-size: 1.3rem; }
+    .podium-bar.p1 { height: 100px; background: var(--gold); }
+    .podium-bar.p2 { height: 72px; background: rgba(201,150,44,0.45); }
+    .podium-bar.p3 { height: 50px; background: rgba(201,150,44,0.25); }
+    .visual-stat { display: flex; align-items: center; justify-content: space-between; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 12px; }
+    .visual-stat .label { color: rgba(255,255,255,0.5); font-size: 0.82rem; }
+    .visual-stat .val { font-family: var(--font-m); color: var(--gold-light); font-weight: 600; }
+
+    /* ── Recent winners ticker ── */
+    .ticker-wrap { overflow: hidden; }
+    .ticker { display: flex; gap: 0; width: max-content; animation: ticker-scroll 30s linear infinite; }
+    .ticker:hover { animation-play-state: paused; }
+    @keyframes ticker-scroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+    .ticker-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 12px 28px; border-right: 1px solid var(--border);
+      white-space: nowrap; font-size: 0.88rem;
+    }
+    .ticker-item .medal { font-size: 1rem; }
+    .ticker-item .name { font-weight: 600; color: var(--ink); }
+    .ticker-item .test { color: var(--muted); }
+    .ticker-item .score { font-family: var(--font-m); color: var(--gold-dark); font-weight: 600; }
+
+    /* ── CTA ── */
+    .cta-section {
+      background: var(--ink); padding: 80px 24px; text-align: center;
+      border-top: 3px solid var(--gold);
+    }
+    .cta-section h2 { font-family: var(--font-d); font-size: 2.4rem; color: #fff; margin-bottom: 12px; }
+    .cta-section p { color: rgba(255,255,255,0.6); margin-bottom: 32px; font-size: 1rem; }
+    .cta-btns { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+
+    /* ── Footer ── */
+    .footer {
+      background: #111827; padding: 24px;
+      text-align: center; color: rgba(255,255,255,0.3); font-size: 0.8rem;
+    }
+
+    /* ── Empty states ── */
+    .empty-card {
+      background: var(--paper-card); border: 1px dashed var(--border);
+      border-radius: var(--radius); padding: 40px 24px; text-align: center;
+      color: var(--muted);
+    }
+    .empty-card .icon { font-size: 2rem; margin-bottom: 10px; }
+
+    @media (max-width: 768px) {
+      .about-grid { grid-template-columns: 1fr; gap: 32px; }
+      .about-visual { display: none; }
+      .stats-inner { grid-template-columns: 1fr; }
+      .stat-item + .stat-item { border-left: none; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px; margin-top: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══ NAVBAR ══ -->
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="nav-brand" href="/">
+      <span class="dot">◆</span> Bilimdonlar
+    </a>
+    <div class="nav-actions">
+      <a class="nav-btn nav-btn-ghost" href="{{ url_for('auth.login') }}">Kirish</a>
+      <a class="nav-btn nav-btn-gold" href="{{ url_for('auth.register') }}">Ro'yxatdan o'tish</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ══ HERO ══ -->
+<section class="hero">
+  <div>
+    <div class="hero-label">🏆 O'zbekistonning intellektual platformasi</div>
+    <h1 class="hero-title">
+      Bilimingizni sinab ko'ring,<br>
+      <span>g'olib bo'ling!</span>
+    </h1>
+    <p class="hero-subtitle">
+      Bilimdonlar — real vaqt ichida o'tkaziladigan online testlar platformasi.
+      Ishtiroking, raqobatdoshlaring bilan bellashing va mukofotlar qo'lga kiriting.
+    </p>
+    <div class="hero-btns">
+      <a class="hero-btn hero-btn-primary" href="{{ url_for('auth.register') }}">🚀 Ishtirok etish</a>
+      <a class="hero-btn hero-btn-outline" href="#testlar">Testlarni ko'rish ↓</a>
+    </div>
+  </div>
+</section>
+
+<!-- ══ STATS ══ -->
+<div class="stats-strip">
+  <div class="stats-inner">
+    <div class="stat-item">
+      <div class="stat-val">{{ total_users }}</div>
+      <div class="stat-lbl">Ro'yxatdan o'tgan ishtirokchi</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-val">{{ total_attempts }}</div>
+      <div class="stat-lbl">Topshirilgan test</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-val">{{ total_tests }}</div>
+      <div class="stat-lbl">O'tkazilgan musobaqa</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ UPCOMING TESTS ══ -->
+<section class="section" id="testlar">
+  <div class="container">
+    <div class="section-head">
+      <span class="section-eyebrow">⏳ Rejalashtirilgan</span>
+      <h2 class="section-title">Kelayotgan testlar</h2>
+      <p class="section-desc">Ro'yxatdan o'ting va test boshlanishi bilan darhol ishtirok eting</p>
+    </div>
+
+    {% if upcoming %}
+      <div class="cards-grid">
+        {% for t in upcoming %}
+          <div class="test-card">
+            <div class="test-card-label">📋 {{ loop.index }}-son musobaqa</div>
+            <div class="test-card-title">{{ t.title }}</div>
+            {% if t.description %}
+              <div class="test-card-desc">{{ t.description }}</div>
+            {% endif %}
+
+            <div class="test-card-meta">
+              <span class="meta-pill">⏱ {{ t.time_limit_minutes }} daqiqa</span>
+              {% if t.is_paid %}
+                <span class="meta-pill" style="background: rgba(201,150,44,0.18); color: var(--gold-dark); font-weight:700;">
+                  💳 {{ "{:,}".format(t.price).replace(",", " ") }} so'm
+                </span>
+              {% else %}
+                <span class="meta-pill" style="background:rgba(63,125,88,0.1); color: #3F7D58;">🆓 Bepul</span>
+              {% endif %}
+              {% if t.starts_at %}
+                <span class="meta-pill">📅 {{ t.starts_at.strftime('%d.%m.%Y %H:%M') }}</span>
+              {% else %}
+                <span class="meta-pill" style="background:rgba(63,125,88,0.1); color: #3F7D58;">✅ Faol — hozir topshiring!</span>
+              {% endif %}
+            </div>
+
+            {% if t.starts_at %}
+              <div class="countdown"
+                   data-target="{{ t.starts_at.strftime('%Y-%m-%dT%H:%M:%S') }}">
+                <div class="cdown-unit"><span class="cdown-num" data-d>--</span><span class="cdown-lbl">kun</span></div>
+                <span class="cdown-sep">:</span>
+                <div class="cdown-unit"><span class="cdown-num" data-h>--</span><span class="cdown-lbl">soat</span></div>
+                <span class="cdown-sep">:</span>
+                <div class="cdown-unit"><span class="cdown-num" data-m>--</span><span class="cdown-lbl">daq</span></div>
+                <span class="cdown-sep">:</span>
+                <div class="cdown-unit"><span class="cdown-num" data-s>--</span><span class="cdown-lbl">son</span></div>
+              </div>
+            {% endif %}
+
+            {% if t.prize_info %}
+              <div class="prize-pill">
+                <strong>🎁 Mukofot</strong>
+                {{ t.prize_info }}
+              </div>
+            {% endif %}
+
+            <a class="join-btn" href="{{ url_for('auth.register') }}">Ishtirok etish →</a>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="empty-card">
+        <div class="icon">📋</div>
+        <p>Hozircha yangi testlar rejalashtirilmagan.</p>
+        <p style="margin-top:6px; font-size:0.85rem;">Ro'yxatdan o'ting — yangi test e'lon qilinishi bilan Telegram orqali xabar olasiz.</p>
+      </div>
+    {% endif %}
+  </div>
+</section>
+
+<!-- ══ RECENT WINNERS TICKER ══ -->
+{% if recent_winners %}
+<div style="background: var(--paper-card); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); overflow: hidden;">
+  <div class="ticker-wrap">
+    <div class="ticker">
+      {% for w in recent_winners %}
+        <div class="ticker-item">
+          <span class="medal">🏆</span>
+          <span class="name">{{ w.full_name }}</span>
+          <span class="test">— {{ w.title }}</span>
+          <span class="score">{{ w.score }}/{{ w.total_points }} ball</span>
+        </div>
+      {% endfor %}
+      {% for w in recent_winners %}
+        <div class="ticker-item">
+          <span class="medal">🏆</span>
+          <span class="name">{{ w.full_name }}</span>
+          <span class="test">— {{ w.title }}</span>
+          <span class="score">{{ w.score }}/{{ w.total_points }} ball</span>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endif %}
+
+<!-- ══ FINISHED TESTS & WINNERS ══ -->
+{% if finished_tests %}
+<section class="section section-alt">
+  <div class="container">
+    <div class="section-head">
+      <span class="section-eyebrow">🥇 Yakunlangan</span>
+      <h2 class="section-title">G'oliblar zali</h2>
+      <p class="section-desc">Oldingi mushabaqalar g'oliblari va yutuq stavkalari</p>
+    </div>
+
+    <div class="cards-grid">
+      {% for t in finished_tests %}
+        {% set w = winners.get(t.id) %}
+        <div class="winner-card">
+          <div class="winner-card-head">
+            <div>
+              <div class="winner-card-title">{{ t.title }}</div>
+              {% if t.ends_at %}
+                <div class="winner-card-date">{{ t.ends_at.strftime('%d.%m.%Y') }} da yakunlandi</div>
+              {% endif %}
+            </div>
+            <span class="ended-badge">Yakunlandi</span>
+          </div>
+
+          <div class="winner-card-body">
+            {% if w %}
+              <div class="winner-row">
+                <span class="winner-medal">🥇</span>
+                <div>
+                  <div class="winner-name">{{ w.full_name }}</div>
+                  <div style="font-size:0.78rem; color: var(--muted); margin-top:2px;">Birinchi o'rin</div>
+                </div>
+                <div class="winner-score">{{ w.score }}/{{ w.total_points }}</div>
+              </div>
+            {% else %}
+              <p style="color: var(--muted); font-size:0.88rem;">Ma'lumot yo'q</p>
+            {% endif %}
+          </div>
+
+          <div class="winner-card-footer">
+            <span class="stat-tag">👥 {{ t.participant_count }} ishtirokchi</span>
+            {% if t.total_points and t.participant_count %}
+              {% set rate = ((t.top_score / t.total_points) * 100)|round|int %}
+              <span class="stat-tag">📈 Eng yuqori: {{ rate }}%</span>
+            {% endif %}
+            {% if t.prize_info %}
+              <span class="winner-prize">🎁 {{ t.prize_info }}</span>
+            {% endif %}
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- ══ ABOUT ══ -->
+<section class="section">
+  <div class="container">
+    <div class="about-grid">
+      <div class="about-text">
+        <h2>Bilimdonlar nima?</h2>
+        <p>
+          Bilimdonlar — O'zbekistonda intellektual bilim musobaqalarini o'tkazish uchun
+          maxsus yaratilgan online platforma. Har bir test real vaqtda o'tkaziladi,
+          natijalar darhol e'lon qilinadi.
+        </p>
+        <p>
+          Platforma maktab o'quvchilari, talabalar va har qanday bilimli insonlar
+          uchun mo'ljallangan. Ishtiroking mutlaqo bepul!
+        </p>
+        <ul class="feature-list">
+          <li>
+            <span class="icon">⏱</span>
+            <span>Vaqt chegarali testlar — haqiqiy imtihon muhiti</span>
+          </li>
+          <li>
+            <span class="icon">🏆</span>
+            <span>Ball va vaqt bo'yicha adolatli reyting tizimi</span>
+          </li>
+          <li>
+            <span class="icon">📲</span>
+            <span>Telegram bot orqali natijalar va xabarlar</span>
+          </li>
+          <li>
+            <span class="icon">🎁</span>
+            <span>G'oliblar uchun real mukofotlar va sertifikatlar</span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="about-visual">
+        <div class="podium">
+          <div class="podium-bar p2">🥈</div>
+          <div class="podium-bar p1">🥇</div>
+          <div class="podium-bar p3">🥉</div>
+        </div>
+        <div class="visual-stat">
+          <span class="label">Jami ishtirokchilar</span>
+          <span class="val">{{ total_users }}+</span>
+        </div>
+        <div class="visual-stat">
+          <span class="label">Topshirilgan testlar</span>
+          <span class="val">{{ total_attempts }}+</span>
+        </div>
+        <div class="visual-stat">
+          <span class="label">O'tkazilgan musabaqalar</span>
+          <span class="val">{{ total_tests }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ CTA ══ -->
+<section class="cta-section">
+  <div>
+    <h2>Tayyor bo'ldingizmi?</h2>
+    <p>Hoziroq ro'yxatdan o'ting va birinchi testingizni topshiring!</p>
+    <div class="cta-btns">
+      <a class="hero-btn hero-btn-primary" href="{{ url_for('auth.register') }}">Ro'yxatdan o'tish — bepul</a>
+      <a class="hero-btn hero-btn-outline" href="{{ url_for('auth.login') }}">Kirish</a>
+    </div>
+  </div>
+</section>
+
+<!-- ══ FOOTER ══ -->
+<footer class="footer">
+  <p>© 2025 Bilimdonlar. Barcha huquqlar himoyalangan.</p>
+</footer>
+
+<script>
+// ── Countdown timers ──
+function updateCountdowns() {
+  document.querySelectorAll(".countdown[data-target]").forEach(function(el) {
+    var target = new Date(el.getAttribute("data-target")).getTime();
+    var now = new Date().getTime();
+    var diff = target - now;
+
+    if (diff <= 0) {
+      el.innerHTML = '<span style="color:var(--gold-dark);font-weight:700;font-size:0.9rem;">🟢 Test boshlandi!</span>';
+      return;
+    }
+
+    var d = Math.floor(diff / (1000*60*60*24));
+    var h = Math.floor((diff % (1000*60*60*24)) / (1000*60*60));
+    var m = Math.floor((diff % (1000*60*60)) / (1000*60));
+    var s = Math.floor((diff % (1000*60)) / 1000);
+
+    var dn = el.querySelector("[data-d]"); if (dn) dn.textContent = String(d).padStart(2,"0");
+    var hn = el.querySelector("[data-h]"); if (hn) hn.textContent = String(h).padStart(2,"0");
+    var mn = el.querySelector("[data-m]"); if (mn) mn.textContent = String(m).padStart(2,"0");
+    var sn = el.querySelector("[data-s]"); if (sn) sn.textContent = String(s).padStart(2,"0");
+  });
+}
+updateCountdowns();
+setInterval(updateCountdowns, 1000);
+
+// ── Smooth nav hide/show ──
+var lastScroll = 0;
+window.addEventListener("scroll", function() {
+  lastScroll = window.scrollY;
+});
+</script>
+</body>
+</html>

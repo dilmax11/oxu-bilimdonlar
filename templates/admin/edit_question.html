@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}{% if question %}Savolni tahrirlash{% else %}Yangi savol{% endif %}{% endblock %}
+{% block content %}
+
+<div class="page-header">
+  <div>
+    <p class="eyebrow">Administrator · {{ test.title }}</p>
+    <h1>{% if question %}Savolni tahrirlash{% else %}Yangi savol{% endif %}</h1>
+  </div>
+  <a class="btn btn-ghost" href="{{ url_for('admin.questions_list', test_id=test.id) }}">← Savollar ro'yxati</a>
+</div>
+
+<div class="card card-pad" style="max-width:680px;">
+  <form method="post">
+    <div class="form-group">
+      <label class="form-label" for="question_text">Savol matni</label>
+      <textarea class="form-textarea" id="question_text" name="question_text" required>{{ (question.question_text if question else request.form.question_text) or '' }}</textarea>
+    </div>
+
+    {% for letter in ['a', 'b', 'c', 'd'] %}
+      <div class="form-group">
+        <label class="form-label" for="option_{{ letter }}">Variant {{ letter|upper }}</label>
+        <input class="form-input" type="text" id="option_{{ letter }}" name="option_{{ letter }}" required
+               value="{{ (question['option_' + letter] if question else request.form['option_' + letter]) or '' }}">
+      </div>
+    {% endfor %}
+
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label" for="correct_option">To'g'ri javob</label>
+        <select class="form-select" id="correct_option" name="correct_option" required>
+          {% set current = (question.correct_option if question else request.form.correct_option) or '' %}
+          <option value="">— tanlang —</option>
+          {% for letter in ['A', 'B', 'C', 'D'] %}
+            <option value="{{ letter }}" {% if current == letter %}selected{% endif %}>{{ letter }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="points">Ball</label>
+        <input class="form-input" type="number" min="1" id="points" name="points"
+               value="{{ (question.points if question else request.form.points) or 1 }}">
+      </div>
+    </div>
+
+    <div class="form-group" style="max-width:160px;">
+      <label class="form-label" for="order_no">Tartib raqami</label>
+      <input class="form-input" type="number" id="order_no" name="order_no"
+             value="{{ (question.order_no if question else request.form.order_no) or 0 }}">
+      <p class="form-hint">Savollar shu raqam bo'yicha tartiblanadi</p>
+    </div>
+
+    <button class="btn btn-primary" type="submit">{% if question %}Saqlash{% else %}Savolni qo'shish{% endif %}</button>
+  </form>
+</div>
+
+{% endblock %}

@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Reyting — {{ test.title }}{% endblock %}
+{% block content %}
+
+<div class="page-header">
+  <div>
+    <p class="eyebrow">G'oliblar jadvali</p>
+    <h1>{{ test.title }}</h1>
+    <p class="subtitle">Saralash: ball bo'yicha, teng bo'lsa — kamroq vaqt sarflagan g'olib hisoblanadi.</p>
+  </div>
+  <a class="btn btn-ghost" href="{{ url_for('user.dashboard') }}">← Testlarga qaytish</a>
+</div>
+
+<div class="card">
+  {% if rows %}
+    {% for r in rows %}
+      {% set rank = loop.index %}
+      <div class="leaderboard-row {% if rank <= 3 %}rank-{{ rank }}{% endif %}">
+        <div class="rank-badge">
+          {% if rank == 1 %}🥇{% elif rank == 2 %}🥈{% elif rank == 3 %}🥉{% else %}{{ rank }}{% endif %}
+        </div>
+        <div class="leaderboard-name">{{ r.full_name }}
+          {% if g.user and r.user_id == g.user.id %}<span class="badge badge-active">siz</span>{% endif %}
+        </div>
+        <div class="leaderboard-score mono">{{ r.score }}/{{ r.total_points }}</div>
+        <div class="leaderboard-time mono">{{ r.time_spent_seconds|mmss }}</div>
+      </div>
+    {% endfor %}
+  {% else %}
+    <div class="empty-state">
+      <div class="empty-icon">🏁</div>
+      <h3>Hali hech kim testni yakunlamagan</h3>
+      <p>Birinchi bo'lib testni topshiring va reytingni boshlab bering!</p>
+    </div>
+  {% endif %}
+</div>
+
+{% endblock %}

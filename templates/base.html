@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="uz">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Bilimdonlar{% endblock %} — Bilimdonlar</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="navbar-inner">
+      <a class="navbar-brand" href="{{ url_for('index') }}">
+        <span class="mark">◆</span> Bilimdonlar
+      </a>
+      <div class="navbar-links">
+        {% if g.user %}
+          <span class="nav-user">{{ g.user.full_name }}</span>
+          {% if g.user.role == 'admin' %}
+            <a class="nav-link {% if request.path.startswith('/admin') and not request.path.startswith('/admin/tests') and not request.path.startswith('/admin/users') and not request.path.startswith('/admin/payments') and not request.path.startswith('/admin/settings') %}active{% endif %}" href="{{ url_for('admin.dashboard') }}">Boshqaruv</a>
+            <a class="nav-link {% if request.path.startswith('/admin/tests') %}active{% endif %}" href="{{ url_for('admin.tests_list') }}">Testlar</a>
+            <a class="nav-link {% if request.path.startswith('/admin/payments') %}active{% endif %}" href="{{ url_for('admin.payments_list') }}">To'lovlar</a>
+            <a class="nav-link {% if request.path.startswith('/admin/users') %}active{% endif %}" href="{{ url_for('admin.users_list') }}">Foydalanuvchilar</a>
+            <a class="nav-link {% if request.path.startswith('/admin/settings') %}active{% endif %}" href="{{ url_for('admin.settings_page') }}">Sozlamalar</a>
+          {% else %}
+            <a class="nav-link {% if request.path == url_for('user.dashboard') %}active{% endif %}" href="{{ url_for('user.dashboard') }}">Testlar</a>
+            <a class="nav-link {% if request.path == url_for('user.profile') %}active{% endif %}" href="{{ url_for('user.profile') }}">Profil</a>
+          {% endif %}
+          <a class="nav-link" href="{{ url_for('auth.logout') }}">Chiqish</a>
+        {% else %}
+          <a class="nav-link" href="{{ url_for('auth.login') }}">Kirish</a>
+          <a class="nav-link" href="{{ url_for('auth.register') }}">Ro'yxatdan o'tish</a>
+        {% endif %}
+      </div>
+    </div>
+  </nav>
+
+  <div class="page">
+    <div class="container">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, message in messages %}
+            <div class="alert alert-{{ category }}" data-autohide>{{ message }}</div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+
+      {% block content %}{% endblock %}
+    </div>
+  </div>
+
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

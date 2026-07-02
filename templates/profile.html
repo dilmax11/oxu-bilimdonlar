@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}Profil{% endblock %}
+{% block content %}
+
+<div class="page-header">
+  <div>
+    <p class="eyebrow">Hisobim</p>
+    <h1>{{ user.full_name }}</h1>
+    <p class="subtitle">Login: {{ user.username }}</p>
+  </div>
+</div>
+
+<div class="card card-pad" style="max-width:560px;">
+  <h3>📲 Telegram orqali xabar olish</h3>
+
+  {% if user.telegram_chat_id %}
+    <p>
+      <span class="badge badge-active">Ulangan</span>
+      Test natijalaringiz va g'oliblar e'loni endi Telegram botiga ham yuboriladi.
+    </p>
+    <form method="post" action="{{ url_for('user.profile') }}" data-confirm="Telegramni qayta ulashni xohlaysizmi?">
+      <input type="hidden" name="action" value="generate_code">
+      <button class="btn btn-ghost btn-sm" type="submit">Boshqa hisobga ulash</button>
+    </form>
+  {% else %}
+    <p class="text-muted">Hisobingizni ulasangiz, test natijalaringiz va g'oliblar e'loni to'g'ridan-to'g'ri Telegramga keladi.</p>
+
+    {% if user.telegram_link_code %}
+      <p>Quyidagi tugmani bosib botni oching:</p>
+      {% if bot_username %}
+        <a class="btn btn-gold" target="_blank"
+           href="https://t.me/{{ bot_username }}?start={{ user.telegram_link_code }}">
+          Telegram botni ochish
+        </a>
+      {% else %}
+        <p>Botda quyidagi buyruqni yuboring:</p>
+        <code class="codebox">/start {{ user.telegram_link_code }}</code>
+      {% endif %}
+      <p class="form-hint">Kod muddati cheklanmagan, lekin har safar yangi kod yaratishingiz mumkin.</p>
+    {% else %}
+      <form method="post" action="{{ url_for('user.profile') }}">
+        <input type="hidden" name="action" value="generate_code">
+        <button class="btn btn-gold" type="submit">Telegramni ulash</button>
+      </form>
+    {% endif %}
+  {% endif %}
+</div>
+
+{% endblock %}

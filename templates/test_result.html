@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}Natija — {{ test.title }}{% endblock %}
+{% block content %}
+
+<div class="page-header">
+  <div>
+    <p class="eyebrow">Natija</p>
+    <h1>{{ test.title }}</h1>
+  </div>
+  <a class="btn btn-ghost" href="{{ url_for('user.leaderboard', test_id=test.id) }}">Umumiy reytingni ko'rish</a>
+</div>
+
+<div class="stat-grid">
+  <div class="stat-card">
+    <div class="stat-value mono">{{ result.score }}/{{ result.total_points }}</div>
+    <div class="stat-label">Ball</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-value mono">{{ result.time_spent_seconds|mmss }}</div>
+    <div class="stat-label">Sarflangan vaqt</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-value mono">#{{ rank }}</div>
+    <div class="stat-label">Reytingdagi o'rin</div>
+  </div>
+</div>
+
+<h2>Javoblaringiz tahlili</h2>
+
+{% for q in questions %}
+  {% set my = my_answers.get(q.id) %}
+  <div class="card question-card">
+    <div class="question-number">SAVOL {{ loop.index }}</div>
+    <div class="question-text">{{ q.question_text }}</div>
+    <div class="option-list">
+      {% for letter, text in [('A', q.option_a), ('B', q.option_b), ('C', q.option_c), ('D', q.option_d)] %}
+        {% set row_class = '' %}
+        {% if letter == q.correct_option %}
+          {% set row_class = 'correct' %}
+        {% elif my and my.selected_option == letter %}
+          {% set row_class = 'incorrect' %}
+        {% endif %}
+        <div class="option-row {{ row_class }}">
+          <span class="option-letter">{{ letter }}</span>
+          <span>{{ text }}</span>
+          {% if letter == q.correct_option %}<span style="margin-left:auto;">✅ to'g'ri javob</span>{% endif %}
+          {% if my and my.selected_option == letter and letter != q.correct_option %}
+            <span style="margin-left:auto;">❌ sizning javobingiz</span>
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+    {% if not my or not my.selected_option %}
+      <p class="text-muted" style="margin-top:10px; margin-bottom:0;">Bu savolga javob bermagansiz.</p>
+    {% endif %}
+  </div>
+{% endfor %}
+
+{% endblock %}

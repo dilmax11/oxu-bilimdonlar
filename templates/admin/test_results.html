@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block title %}{{ test.title }} — Natijalar{% endblock %}
+{% block content %}
+
+<div class="page-header">
+  <div>
+    <p class="eyebrow">Administrator · {{ test.title }}</p>
+    <h1>Natijalar va g'oliblar</h1>
+    <p class="subtitle">{{ rows|length }} ta foydalanuvchi testni yakunlagan</p>
+  </div>
+  <div class="btn-row">
+    <a class="btn btn-ghost" href="{{ url_for('admin.tests_list') }}">← Testlar</a>
+    {% if rows %}
+      <form method="post" action="{{ url_for('admin.announce_winners', test_id=test.id) }}"
+            data-confirm="Top-3 g'olibga Telegram orqali e'lon yuborilsinmi?">
+        <button class="btn btn-gold" type="submit">🏆 G'oliblarni e'lon qilish</button>
+      </form>
+    {% endif %}
+  </div>
+</div>
+
+{% if rows %}
+<div class="card">
+  <div class="table-wrap">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>O'rin</th>
+          <th>Ism</th>
+          <th>Login</th>
+          <th>Ball</th>
+          <th>Vaqt</th>
+          <th>Telegram</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for r in rows %}
+          <tr>
+            <td class="mono">
+              {% if loop.index <= 3 %}{{ medals[loop.index0] }}{% else %}{{ loop.index }}{% endif %}
+            </td>
+            <td><strong>{{ r.full_name }}</strong></td>
+            <td class="text-muted">{{ r.username }}</td>
+            <td class="mono">{{ r.score }}/{{ r.total_points }}</td>
+            <td class="mono">{{ r.time_spent_seconds|mmss }}</td>
+            <td>
+              {% if r.telegram_chat_id %}
+                <span class="badge badge-active">Ulangan</span>
+              {% else %}
+                <span class="badge badge-inactive">Yo'q</span>
+              {% endif %}
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% else %}
+  <div class="card">
+    <div class="empty-state">
+      <div class="empty-icon">🏁</div>
+      <h3>Hali natijalar yo'q</h3>
+      <p>Foydalanuvchilar testni topshirgach, natijalar shu yerda ko'rinadi.</p>
+    </div>
+  </div>
+{% endif %}
+
+{% endblock %}

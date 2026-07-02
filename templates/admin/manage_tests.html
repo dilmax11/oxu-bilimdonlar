@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% block title %}Testlarni boshqarish{% endblock %}
+{% block content %}
+
+<div class="page-header">
+  <div>
+    <p class="eyebrow">Administrator</p>
+    <h1>Testlar</h1>
+  </div>
+  <a class="btn btn-gold" href="{{ url_for('admin.test_new') }}">+ Yangi test</a>
+</div>
+
+{% if tests %}
+<div class="card">
+  <div class="table-wrap">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Nomi</th>
+          <th>Holati</th>
+          <th>Narxi</th>
+          <th>Savollar</th>
+          <th>Topshirgan</th>
+          <th>Vaqt</th>
+          <th>Amallar</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for t in tests %}
+          <tr>
+            <td><strong>{{ t.title }}</strong></td>
+            <td>
+              {% if t.is_active %}
+                <span class="badge badge-active">Faol</span>
+              {% else %}
+                <span class="badge badge-inactive">Yashirin</span>
+              {% endif %}
+            </td>
+            <td>
+              {% if t.is_paid %}
+                <span class="badge" style="background: rgba(201,150,44,0.15); color: var(--gold-dark);">
+                  💳 {{ "{:,}".format(t.price).replace(",", " ") }} so'm
+                </span>
+              {% else %}
+                <span class="badge badge-active">🆓 Bepul</span>
+              {% endif %}
+            </td>
+            <td class="mono">{{ t.question_count }}</td>
+            <td class="mono">{{ t.attempt_count }}</td>
+            <td class="mono">{{ t.time_limit_minutes }} daq</td>
+            <td>
+              <div class="btn-row">
+                <a class="btn btn-ghost btn-sm" href="{{ url_for('admin.questions_list', test_id=t.id) }}">Savollar</a>
+                <a class="btn btn-ghost btn-sm" href="{{ url_for('admin.test_edit', test_id=t.id) }}">Tahrirlash</a>
+                <a class="btn btn-gold btn-sm" href="{{ url_for('admin.test_live', test_id=t.id) }}">🔴 Jonli kuzatish</a>
+                <a class="btn btn-ghost btn-sm" href="{{ url_for('admin.test_results', test_id=t.id) }}">Natijalar</a>
+                {% if t.is_paid %}
+                  <a class="btn btn-ghost btn-sm" href="{{ url_for('admin.payments_list', test_id=t.id) }}">To'lovlar</a>
+                {% endif %}
+                <form method="post" action="{{ url_for('admin.test_toggle', test_id=t.id) }}">
+                  <button class="btn btn-sm {% if t.is_active %}btn-ghost{% else %}btn-gold{% endif %}" type="submit">
+                    {% if t.is_active %}To'xtatish{% else %}Faollashtirish{% endif %}
+                  </button>
+                </form>
+                <form method="post" action="{{ url_for('admin.test_delete', test_id=t.id) }}"
+                      data-confirm="'{{ t.title }}' testini va unga tegishli barcha natijalarni o'chirishni tasdiqlaysizmi?">
+                  <button class="btn btn-danger btn-sm" type="submit">O'chirish</button>
+                </form>
+              </div>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% else %}
+  <div class="card">
+    <div class="empty-state">
+      <div class="empty-icon">📋</div>
+      <h3>Hali testlar yaratilmagan</h3>
+      <p>"+ Yangi test" tugmasi orqali birinchi testingizni yarating.</p>
+    </div>
+  </div>
+{% endif %}
+
+{% endblock %}

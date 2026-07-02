@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}Sozlamalar{% endblock %}
+{% block content %}
+
+<div class="page-header">
+  <div>
+    <p class="eyebrow">Administrator</p>
+    <h1>To'lov sozlamalari</h1>
+  </div>
+</div>
+
+<div class="card card-pad" style="max-width:520px;">
+  <p class="text-muted" style="margin-bottom:18px;">
+    Bu yerda kiritilgan karta ma'lumotlari foydalanuvchilarga pullik testlar uchun
+    to'lov qilish sahifasida ko'rsatiladi.
+  </p>
+  <form method="post">
+    <div class="form-group">
+      <label class="form-label" for="payment_card_number">Karta raqami</label>
+      <input class="form-input mono" type="text" id="payment_card_number" name="payment_card_number"
+             placeholder="8600 1234 5678 9012" required
+             value="{{ settings.get('payment_card_number', '') }}">
+    </div>
+    <div class="form-group">
+      <label class="form-label" for="payment_card_owner">Karta egasining F.I.SH.</label>
+      <input class="form-input" type="text" id="payment_card_owner" name="payment_card_owner"
+             placeholder="Aliyev Vali Aliyevich" required
+             value="{{ settings.get('payment_card_owner', '') }}">
+    </div>
+    <button class="btn btn-primary" type="submit">Saqlash</button>
+  </form>
+</div>
+
+{% endblock %}

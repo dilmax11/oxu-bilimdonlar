@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% block title %}Foydalanuvchilar{% endblock %}
+{% block content %}
+
+<div class="page-header">
+  <div>
+    <p class="eyebrow">Administrator</p>
+    <h1>Foydalanuvchilar</h1>
+  </div>
+</div>
+
+<form method="get" class="card card-pad" style="margin-bottom:18px; display:flex; gap:10px;">
+  <input class="form-input" type="text" name="q" placeholder="Ism yoki login bo'yicha qidirish..." value="{{ q }}">
+  <button class="btn btn-ghost" type="submit">Qidirish</button>
+</form>
+
+<div class="card">
+  <div class="table-wrap">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Ism</th>
+          <th>Login</th>
+          <th>Rol</th>
+          <th>Telegram</th>
+          <th>Holat</th>
+          <th>Ro'yxatdan o'tgan</th>
+          <th>Amallar</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for u in users %}
+          <tr>
+            <td><strong>{{ u.full_name }}</strong></td>
+            <td class="text-muted">{{ u.username }}</td>
+            <td>
+              {% if u.role == 'admin' %}
+                <span class="badge badge-admin">Admin</span>
+              {% else %}
+                <span class="badge badge-user">Foydalanuvchi</span>
+              {% endif %}
+            </td>
+            <td>
+              {% if u.telegram_chat_id %}
+                <span class="badge badge-active">Ulangan</span>
+              {% else %}
+                <span class="badge badge-inactive">Yo'q</span>
+              {% endif %}
+            </td>
+            <td>
+              {% if u.is_blocked %}
+                <span class="badge badge-blocked">Bloklangan</span>
+              {% else %}
+                <span class="badge badge-active">Faol</span>
+              {% endif %}
+            </td>
+            <td class="mono text-muted">{{ u.created_at.strftime('%d.%m.%Y') }}</td>
+            <td>
+              {% if u.id != g.user.id %}
+                <div class="btn-row">
+                  <form method="post" action="{{ url_for('admin.user_toggle_role', user_id=u.id) }}">
+                    <button class="btn btn-ghost btn-sm" type="submit">
+                      {% if u.role == 'admin' %}Adminlikdan olish{% else %}Admin qilish{% endif %}
+                    </button>
+                  </form>
+                  <form method="post" action="{{ url_for('admin.user_toggle_block', user_id=u.id) }}">
+                    <button class="btn btn-ghost btn-sm" type="submit">
+                      {% if u.is_blocked %}Blokdan chiqarish{% else %}Bloklash{% endif %}
+                    </button>
+                  </form>
+                  <form method="post" action="{{ url_for('admin.user_delete', user_id=u.id) }}"
+                        data-confirm="'{{ u.full_name }}' foydalanuvchisini o'chirishni tasdiqlaysizmi?">
+                    <button class="btn btn-danger btn-sm" type="submit">O'chirish</button>
+                  </form>
+                </div>
+              {% else %}
+                <span class="text-muted" style="font-size:0.82rem;">— siz —</span>
+              {% endif %}
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+{% endblock %}

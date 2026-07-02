@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% block title %}{{ test.title }}{% endblock %}
+{% block content %}
+
+<div class="test-take-header">
+  <div>
+    <p class="eyebrow" style="margin-bottom:2px;">Test jarayonida</p>
+    <h2 style="margin:0;">{{ test.title }}</h2>
+  </div>
+  <div id="timer-box" class="timer-box" data-remaining="{{ remaining_seconds }}">
+    <span>⏱</span>
+    <span id="timer-digits" class="timer-digits">--:--</span>
+  </div>
+</div>
+
+<p class="text-muted" style="margin-bottom:20px;">
+  Vaqt tugaganda test avtomatik topshiriladi. Barcha savollarga javob berishni unutmang.
+</p>
+
+<form id="test-form" method="post" action="{{ url_for('user.submit_test', test_id=test.id) }}">
+  {% for q in questions %}
+    <div class="card question-card" data-question-id="{{ q.id }}">
+      <div class="question-number">SAVOL {{ loop.index }} / {{ questions|length }}</div>
+      <div class="question-text">{{ q.question_text }}</div>
+      <div class="option-list">
+        {% for letter, text in q.shuffled_options %}
+          <label class="option-row">
+            <input type="radio" name="q_{{ q.id }}" value="{{ letter }}" required>
+            <span>{{ text }}</span>
+          </label>
+        {% endfor %}
+      </div>
+    </div>
+  {% endfor %}
+
+  <button class="btn btn-primary btn-block" type="submit">Testni yakunlash</button>
+</form>
+
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/test_timer.js') }}"></script>
+<script>
+  // Har bir savolga javob belgilanganda (yoki o'zgartirilganda) darhol serverga
+  // yuboramiz, shu orqali admin panelida real vaqtda kuzatish mumkin bo'ladi.
+  (function () {
+    const form = document.getElementById("test-form");
+    const answerUrl = "{{ url_for('user.record_answer', test_id=test.id) }}";
+
+    form.addEventListener("change", function (e) {
+      const input = e.target;
+      if (input.type !== "radio") return;
+      const card = input.closest(".question-card");
+      if (!card) return;
+      const questionId = card.getAttribute("data-question-id");
+
+      fetch(answerUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          question_id: questionId,
+          selected_option: input.value,
+        }),
+      }).catch(function () {
+        // Internet uzilishi bo'lsa ham testni davom ettirishga xalaqit bermaymiz.
+        // Yakuniy "Testni yakunlash" bosilganda barcha javoblar baribir to'liq yuboriladi.
+      });
+    });
+  })();
+</script>
+{% endblock %}

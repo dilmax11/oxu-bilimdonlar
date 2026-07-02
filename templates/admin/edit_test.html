@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% block title %}{% if test %}Testni tahrirlash{% else %}Yangi test{% endif %}{% endblock %}
+{% block content %}
+
+<div class="page-header">
+  <div>
+    <p class="eyebrow">Administrator</p>
+    <h1>{% if test %}Testni tahrirlash{% else %}Yangi test yaratish{% endif %}</h1>
+  </div>
+  <a class="btn btn-ghost" href="{{ url_for('admin.tests_list') }}">← Testlar ro'yxati</a>
+</div>
+
+<div class="card card-pad" style="max-width:680px;">
+  <form method="post">
+    <div class="form-group">
+      <label class="form-label" for="title">Test nomi</label>
+      <input class="form-input" type="text" id="title" name="title" required
+             value="{{ (test.title if test else request.form.title) or '' }}">
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="description">Tavsif (ixtiyoriy)</label>
+      <textarea class="form-textarea" id="description" name="description">{{ (test.description if test else request.form.description) or '' }}</textarea>
+      <p class="form-hint">Landing sahifada ishtirokchilarga ko'rsatiladi</p>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="prize_info">Mukofot / yutuq stavkasi (ixtiyoriy)</label>
+      <input class="form-input" type="text" id="prize_info" name="prize_info"
+             placeholder="Masalan: 1-o'rin — 500,000 so'm, 2-o'rin — 250,000 so'm"
+             value="{{ (test.prize_info if test else request.form.prize_info) or '' }}">
+      <p class="form-hint">Landing sahifada "Mukofot" qismida ko'rsatiladi</p>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label" for="starts_at">Boshlanish vaqti (ixtiyoriy)</label>
+        <input class="form-input" type="datetime-local" id="starts_at" name="starts_at"
+               value="{{ (test.starts_at.strftime('%Y-%m-%dT%H:%M') if test and test.starts_at else request.form.starts_at) or '' }}">
+        <p class="form-hint">Belgilansa, landing sahifada "Kelayotgan testlar"da ko'rinadi</p>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="ends_at">Tugash vaqti (ixtiyoriy)</label>
+        <input class="form-input" type="datetime-local" id="ends_at" name="ends_at"
+               value="{{ (test.ends_at.strftime('%Y-%m-%dT%H:%M') if test and test.ends_at else request.form.ends_at) or '' }}">
+        <p class="form-hint">Belgilansa, yakunlangach "G'oliblar"da ko'rinadi</p>
+      </div>
+    </div>
+
+    <div class="form-group" style="max-width:220px;">
+      <label class="form-label" for="time_limit_minutes">Test davomiyligi (daqiqa)</label>
+      <input class="form-input" type="number" min="1" id="time_limit_minutes" name="time_limit_minutes" required
+             value="{{ (test.time_limit_minutes if test else request.form.time_limit_minutes) or 10 }}">
+      <p class="form-hint">Foydalanuvchi testni boshlagandan keyin shuncha vaqt beriladi</p>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" style="display:flex; align-items:center; gap:8px; cursor:pointer;">
+        <input type="checkbox" id="is_paid" name="is_paid" value="1" style="width:18px; height:18px;"
+               {% if (test and test.is_paid) or (not test and request.form.is_paid) %}checked{% endif %}
+               onchange="document.getElementById('price-group').style.display = this.checked ? 'block' : 'none';">
+        Bu pullik test
+      </label>
+      <p class="form-hint">Belgilansa, foydalanuvchi avval to'lov chekini yuklab, administrator tasdiqlashini kutadi</p>
+    </div>
+
+    <div class="form-group" id="price-group" style="max-width:220px;
+         display: {% if test and test.is_paid %}block{% elif not test and request.form.is_paid %}block{% else %}none{% endif %};">
+      <label class="form-label" for="price">Narxi (so'm)</label>
+      <input class="form-input" type="number" min="0" id="price" name="price"
+             value="{{ (test.price if test else request.form.price) or 0 }}">
+      <p class="form-hint">Asosiy sahifada va testlar ro'yxatida ko'rsatiladi</p>
+    </div>
+
+    <button class="btn btn-primary" type="submit">
+      {% if test %}Saqlash{% else %}Yaratish va savol qo'shish{% endif %}
+    </button>
+  </form>
+</div>
+
+{% endblock %}

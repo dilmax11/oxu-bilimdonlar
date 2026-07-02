@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block title %}Boshqaruv paneli{% endblock %}
+{% block content %}
+
+<div class="page-header">
+  <div>
+    <p class="eyebrow">Administrator</p>
+    <h1>Boshqaruv paneli</h1>
+  </div>
+  <a class="btn btn-gold" href="{{ url_for('admin.test_new') }}">+ Yangi test</a>
+</div>
+
+<div class="stat-grid">
+  <div class="stat-card">
+    <div class="stat-value mono">{{ total_users }}</div>
+    <div class="stat-label">Foydalanuvchilar</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-value mono">{{ active_tests }}</div>
+    <div class="stat-label">Faol testlar</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-value mono">{{ total_tests }}</div>
+    <div class="stat-label">Jami testlar</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-value mono">{{ total_attempts }}</div>
+    <div class="stat-label">Topshirilgan testlar</div>
+  </div>
+  <div class="stat-card">
+    <a href="{{ url_for('admin.payments_list') }}" style="text-decoration:none; color:inherit; display:block;">
+      <div class="stat-value mono" style="color: {% if pending_payments %}var(--gold-dark){% else %}inherit{% endif %};">{{ pending_payments }}</div>
+      <div class="stat-label">⏳ Kutilayotgan to'lovlar</div>
+    </a>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <h3>So'nggi natijalar</h3>
+  </div>
+  {% if recent %}
+    <div class="table-wrap">
+      <table class="table">
+        <thead>
+          <tr><th>Test</th><th>Foydalanuvchi</th><th>Ball</th><th>Vaqt</th></tr>
+        </thead>
+        <tbody>
+          {% for r in recent %}
+            <tr>
+              <td>{{ r.title }}</td>
+              <td>{{ r.full_name }}</td>
+              <td class="mono">{{ r.score }}/{{ r.total_points }}</td>
+              <td class="mono text-muted">{{ r.finished_at.strftime('%d.%m.%Y %H:%M') }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <div class="empty-state">
+      <div class="empty-icon">🗒️</div>
+      <p>Hali hech kim test topshirmagan.</p>
+    </div>
+  {% endif %}
+</div>
+
+{% endblock %}

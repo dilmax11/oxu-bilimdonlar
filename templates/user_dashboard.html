@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% block title %}Testlar{% endblock %}
+{% block content %}
+
+<div class="page-header">
+  <div>
+    <p class="eyebrow">Bilimdonlar</p>
+    <h1>Faol testlar</h1>
+    <p class="subtitle">Quyidagi testlardan birini tanlang va bilimingizni sinab ko'ring.</p>
+  </div>
+</div>
+
+{% if tests %}
+<div class="card-grid">
+  {% for test in tests %}
+    {% set my = my_results.get(test.id) %}
+    {% set payment = my_payments.get(test.id) %}
+    <div class="card test-card">
+      <span class="stamp">FAOL</span>
+      <h3>{{ test.title }}</h3>
+      <div class="test-meta">
+        <span>⏱ {{ test.time_limit_minutes }} daqiqa</span>
+        {% if test.is_paid %}
+          <span style="color: var(--gold-dark); font-weight:600;">
+            💳 {{ "{:,}".format(test.price).replace(",", " ") }} so'm
+          </span>
+        {% else %}
+          <span style="color: var(--success); font-weight:600;">🆓 Bepul</span>
+        {% endif %}
+      </div>
+      {% if test.description %}
+        <p class="test-desc">{{ test.description }}</p>
+      {% endif %}
+
+      <div class="btn-row" style="margin-top:6px;">
+        {% if test.is_paid and not (payment and payment.status == 'approved') %}
+          {% if payment and payment.status == 'pending' %}
+            <span class="badge badge-inactive">⏳ To'lov tekshirilmoqda</span>
+          {% elif payment and payment.status == 'rejected' %}
+            <span class="badge badge-blocked">❌ Rad etildi</span>
+            <a class="btn btn-gold" href="{{ url_for('user.payment_page', test_id=test.id) }}">Qayta yuborish</a>
+          {% else %}
+            <a class="btn btn-gold" href="{{ url_for('user.payment_page', test_id=test.id) }}">💳 To'lov qilish</a>
+          {% endif %}
+        {% elif not my %}
+          <form method="post" action="{{ url_for('user.start_test', test_id=test.id) }}">
+            <button class="btn btn-gold" type="submit">Boshlash</button>
+          </form>
+        {% elif my.status == 'in_progress' %}
+          <a class="btn btn-primary" href="{{ url_for('user.take_test', test_id=test.id) }}">Davom ettirish</a>
+        {% else %}
+          <a class="btn btn-ghost" href="{{ url_for('user.test_result', test_id=test.id) }}">
+            Natijam: {{ my.score }}/{{ my.total_points }}
+          </a>
+          <a class="btn btn-ghost" href="{{ url_for('user.leaderboard', test_id=test.id) }}">Reyting</a>
+        {% endif %}
+      </div>
+    </div>
+  {% endfor %}
+</div>
+{% else %}
+  <div class="card">
+    <div class="empty-state">
+      <div class="empty-icon">📋</div>
+      <h3>Hozircha faol testlar yo'q</h3>
+      <p>Administrator yangi test e'lon qilganda bu yerda paydo bo'ladi.</p>
+    </div>
+  </div>
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+{% block title %}{{ test.title }} — Jonli kuzatish{% endblock %}
+{% block content %}
+
+<div class="page-header">
+  <div>
+    <p class="eyebrow">Administrator · Jonli kuzatish</p>
+    <h1 style="margin:0;">{{ test.title }}</h1>
+  </div>
+  <div class="btn-row">
+    <span class="badge badge-active" id="live-indicator">🔴 Jonli</span>
+    <a class="btn btn-ghost btn-sm" href="{{ url_for('admin.tests_list') }}">← Testlar ro'yxati</a>
+  </div>
+</div>
+
+<p class="text-muted" style="margin-bottom:18px;">
+  Ma'lumotlar har 3 soniyada avtomatik yangilanadi. 🟢 — to'g'ri javob, 🔴 — noto'g'ri javob, ⚪ — hali javob berilmagan / tashlab o'tilgan savol.
+  Jadval ball bo'yicha (eng yuqoridan pastga) avtomatik tartiblanadi.
+</p>
+
+<div class="card">
+  <div class="table-wrap">
+    <table class="table" id="live-table">
+      <thead>
+        <tr id="live-thead-row">
+          <th style="width:32px;">#</th>
+          <th>Ishtirokchi</th>
+          <th>Ball</th>
+          <th>Holati</th>
+          <th>Savollar bo'yicha javoblar</th>
+        </tr>
+      </thead>
+      <tbody id="live-tbody">
+        <tr><td colspan="5" class="text-muted">Yuklanmoqda...</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+{% endblock %}
+{% block scripts %}
+<style>
+  .star-track { display: flex; gap: 4px; flex-wrap: wrap; font-size: 1rem; line-height: 1; }
+  .star-track .star { display: inline-block; }
+  .star-correct { filter: none; }
+  .star-wrong { opacity: 0.95; }
+  .star-skipped { opacity: 0.35; }
+  .live-status-progress { background: var(--success-bg); color: var(--success); }
+  .live-status-finished { background: #ece7d8; color: var(--muted); }
+  .live-rank-1 td:first-child, .live-rank-2 td:first-child, .live-rank-3 td:first-child { font-weight: 700; color: var(--gold-dark); }
+</style>
+<script>
+(function () {
+  const dataUrl = "{{ url_for('admin.test_live_data', test_id=test.id) }}";
+  const tbody = document.getElementById("live-tbody");
+  let timer = null;
+
+  function starFor(status) {
+    if (status === "correct") return '<span class="star star-correct">🟢</span>';
+    if (status === "wrong") return '<span class="star star-wrong">🔴</span>';
+    return '<span class="star star-skipped">⚪</span>';
+  }
+
+  function statusLabel(status) {
+    return status === "finished"
+      ? '<span class="badge live-status-finished">Yakunladi</span>'
+      : '<span class="badge live-status-progress">Yechmoqda</span>';
+  }
+
+  function render(data) {
+    const participants = data.participants || [];
+
+    if (participants.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="5" class="text-muted">Hozircha hech kim testni boshlamadi.</td></tr>';
+      return;
+    }
+
+    let html = "";
+    participants.forEach(function (p, idx) {
+      const rankClass = idx < 3 ? " live-rank-" + (idx + 1) : "";
+      const stars = p.answers.map(starFor).join("");
+      html += '<tr class="' + rankClass + '">' +
+        "<td>" + (idx + 1) + "</td>" +
+        "<td><strong>" + escapeHtml(p.full_name) + "</strong><br><span class=\"text-muted mono\" style=\"font-size:0.78rem;\">@" + escapeHtml(p.username) + "</span></td>" +
+        "<td class=\"mono\"><strong>" + p.score + "</strong></td>" +
+        "<td>" + statusLabel(p.status) + "</td>" +
+        "<td><div class=\"star-track\">" + stars + "</div></td>" +
+        "</tr>";
+    });
+    tbody.innerHTML = html;
+  }
+
+  function escapeHtml(s) {
+    return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+    });
+  }
+
+  function poll() {
+    fetch(dataUrl, { cache: "no-store" })
+      .then(function (res) { return res.json(); })
+      .then(render)
+      .catch(function () {
+        // Vaqtinchalik tarmoq xatosi - keyingi 3 soniyalik yangilanishda qayta urinamiz.
+      });
+  }
+
+  poll();
+  timer = setInterval(poll, 3000);
+
+  window.addEventListener("beforeunload", function () {
+    if (timer) clearInterval(timer);
+  });
+})();
+</script>
+{% endblock %}
